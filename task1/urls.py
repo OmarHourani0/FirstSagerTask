@@ -20,10 +20,12 @@ from task1 import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('/', views.hello_world),
     path('', views.hello_world),
     path('health/', views.health_check),
     path('project/', views.name),
     path('nigga/', views.nig),
+    path('data/', views.drone_data_list)
 ]
 
 

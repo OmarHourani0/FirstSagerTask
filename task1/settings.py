@@ -1,8 +1,14 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # loads variables from .env file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = BASE_DIR.parent
+TEMPLATES_DIR = BASE_DIR / "templates"
+TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -12,7 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+# DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+
+DEBUG = True  # Set to True for development; change to False in production
 
 # Drone IDs from environment file
 raw = os.environ.get('DRONE_IDS', '')
@@ -21,11 +29,16 @@ DRONE_IDS = [d.strip() for d in raw.split(',')] if raw else []
 # MQTT Creds from environment file
 MQTT_BROKER_URL = os.environ.get('MQTT_BROKER_URL', 'localhost')
 MQTT_BROKER_PORT = int(os.environ.get('MQTT_BROKER_PORT', '1883'))
+MQTT_CLIENT_ID = os.environ.get('MQTT_CLIENT_ID', '')
 
 PROJECT_NAME = 'droneData'
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+    'localhost',
+    '127.0.0.1',                 
+]
 
 
 # Application definition
@@ -41,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,7 +69,7 @@ ROOT_URLCONF = 'task1.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,8 +130,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'                     # leading slash is important
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',                    # points to src/static
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

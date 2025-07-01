@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drone Data</title>
+</head>
+<body>
+    <h1>Recent Drone Data</h1>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Drone ID</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Elevation</th>
+                <th>Classification</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in drone_data_list %}
+            <tr>
+                <td>{{ entry.timestamp }}</td>
+                <td>{{ entry.drone_id }}</td>
+                <td>{{ entry.latitude }}</td>
+                <td>{{ entry.longitude }}</td>
+                <td>{{ entry.elevation }}</td>
+                <td>{{ entry.classification }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No data available</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

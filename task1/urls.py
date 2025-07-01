@@ -24,11 +24,12 @@ from .views import danger, drone_flight_path, drone_list, drones_nearby
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', views.hello_world),
-    path('', views.hello_world),
+    # path('/', views.hello_world),
+    # path('', views.hello_world),
     path('health/', views.health_check),
     path('project/', views.name),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('signup/', views.signup, name='signup'),
     path('data/', views.drone_data_list),

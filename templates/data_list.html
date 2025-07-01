@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Recent Drone Data</h1>
-    <table border="1" cellpadding="5">
+    <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
                 <th>Timestamp</th>
@@ -13,6 +13,22 @@
                 <th>Latitude</th>
                 <th>Longitude</th>
                 <th>Elevation</th>
+                <th>Height</th>
+                <th>Home Distance</th>
+                <th>Horizontal Speed</th>
+                <th>Vertical Speed</th>                
+                <th>Gear</th>
+                <th>Near Area Limit</th>
+                <th>Near Height Limit</th>
+                <th>RC Lost Action</th>
+                <th>RID State</th>
+                <th>RTH Altitude</th>
+                <th>Storage Total</th>
+                <th>Storage Used</th>
+                <th>Total Flight Distance</th>
+                <th>Total Flight Sorties</th>
+                <th>Total Flight Time</th>
+                <th>Track ID</th>
                 <th>Classification</th>
             </tr>
         </thead>
@@ -24,10 +40,26 @@
                 <td>{{ entry.latitude }}</td>
                 <td>{{ entry.longitude }}</td>
                 <td>{{ entry.elevation }}</td>
+                <td>{{ entry.height }}</td>
+                <td>{{ entry.home_distance }}</td>
+                <td>{{ entry.horizontal_speed }}</td>
+                <td>{{ entry.vertical_speed }}</td>        
+                <td>{{ entry.gear }}</td>
+                <td>{{ entry.is_near_area_limit }}</td>
+                <td>{{ entry.is_near_height_limit }}</td>
+                <td>{{ entry.rc_lost_action }}</td>
+                <td>{{ entry.rid_state }}</td>
+                <td>{{ entry.rth_altitude }}</td>
+                <td>{{ entry.storage_total }}</td>
+                <td>{{ entry.storage_used }}</td>
+                <td>{{ entry.total_flight_distance }}</td>
+                <td>{{ entry.total_flight_sorties }}</td>
+                <td>{{ entry.total_flight_time }}</td>
+                <td>{{ entry.track_id }}</td>
                 <td>{{ entry.classification }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="6">No data available</td></tr>
+            <tr><td colspan="24">No data available</td></tr>
             {% endfor %}
         </tbody>
     </table>

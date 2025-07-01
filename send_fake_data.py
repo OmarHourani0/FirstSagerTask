@@ -2,19 +2,35 @@ import json
 import time
 import random
 import paho.mqtt.publish as publish
+import string
+
+from droneData.classifiers import haversine
+
 
 def fake_payload():
+    length = 8
+    track_id = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    lat = 31.000 + random.uniform(-8.51, 15.31)
+    lon = 39.000 + random.uniform(-8.51, 15.31)
+    height_limit = 500
+    elevation = random.uniform(0, 550)
+    if elevation > height_limit:
+        near_height_limit = 1
+    else:
+        near_height_limit = 0
+        
+    
     return {
-        "elevation": random.uniform(0, 10),
+        "elevation": elevation,
         "gear": random.choice([0, 1, 2, 3]),
-        "height": random.uniform(0, 70),
-        "height_limit": 70,
-        "home_distance": random.random(),
+        "height": random.uniform(0, 10),
+        "height_limit": height_limit,
+        "home_distance": haversine(31.000, 39.000, 31.000 + lat, lon),
         "horizontal_speed": random.uniform(0, 15),
         "is_near_area_limit": random.choice([0, 1]),
-        "is_near_height_limit": random.choice([0, 1]),
-        "latitude": 31.978 + random.uniform(-0.01, 0.01),
-        "longitude": 35.831 + random.uniform(-0.01, 0.01),
+        "is_near_height_limit": near_height_limit,
+        "latitude": lat,
+        "longitude": lon,
         "rc_lost_action": random.choice([0, 1, 2]),
         "rid_state": random.choice([False, True]),
         "rth_altitude": 20 + random.uniform(-5, 5),
@@ -25,8 +41,8 @@ def fake_payload():
         "total_flight_distance": random.uniform(0, 1000),
         "total_flight_sorties": random.randint(0, 20),
         "total_flight_time": random.uniform(0, 1000),
-        "track_id": "",
-        "vertical_speed": random.uniform(-5, 5),
+        "track_id": track_id,
+        "vertical_speed": random.uniform(0, 30),
         "wind_direction": random.randint(0, 359),
         "wind_speed": random.uniform(0, 20)
     }
@@ -49,4 +65,4 @@ for id in DRONE_IDS:
     payload = json.dumps(fake_payload())
     publish.single(topic, payload, hostname="localhost", port=1883)
     print(f"Sent to {topic}: {payload}")
-    # time.sleep(2)
+    time.sleep(0.02)

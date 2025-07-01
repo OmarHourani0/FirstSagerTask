@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Start Mosquitto broker in the background
+mosquitto -c /etc/mosquitto/mosquitto.conf -d
+
 # Activate virtual environment
-source venv/bin/activate
+source /opt/venv/bin/activate
 
 # Change to code directory
 cd /code
@@ -9,15 +12,11 @@ cd /code
 # Apply migrations
 python manage.py migrate --no-input 
 
-# Create admin user if script exists
-python manage.py auto_admin
-
 # Set runtime variables
 export RUNTIME_PORT=8000
 export RUNTIME_HOST=0.0.0.0
 
-# Collect static files
-python manage.py collectstatic --no-input 
+python send_fake_data.py
 
-# Run development server (corrected)
+# Run development server
 python manage.py runserver $RUNTIME_HOST:$RUNTIME_PORT

@@ -15,6 +15,7 @@ from django.http import JsonResponse
 project_name = settings.PROJECT_NAME
 
 
+@login_required
 def drones_nearby(request):
     nearby_drones = []
 
@@ -43,7 +44,7 @@ def drones_nearby(request):
         "nearby_drones": sorted(nearby_drones, key=lambda x: x['drone_id'])
     })
 
-
+@login_required
 def danger(request):
     data = DroneData.objects.exclude(classification="All Good").order_by('-drone_id').values(
         'drone_id', 'classification',
@@ -55,6 +56,7 @@ def danger(request):
         'danger_list': data,
     })
     
+
 def drone_flight_path(request, drone_id):
     # Get all positions for the drone ordered by time
     points = DroneData.objects.filter(drone_id=drone_id).order_by('timestamp').values('longitude', 'latitude', 'timestamp')
@@ -84,6 +86,7 @@ def drone_flight_path(request, drone_id):
 # views.py
 from django.http import JsonResponse
 from droneData.models import DroneData
+
 
 def all_drone_paths(request):
     drone_ids = DroneData.objects.values_list('drone_id', flat=True).distinct()
@@ -115,9 +118,11 @@ def all_drone_paths(request):
     })
 
 
+@login_required
 def drone_map(request):
     return render(request, 'drone_map.html')
 
+@login_required
 def drone_list(request):
     data = DroneData.objects.order_by('-drone_id').values(
         'drone_id', 'latitude', 'longitude'

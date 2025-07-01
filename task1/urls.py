@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import include, path
 from task1 import views
 from django.contrib.auth import views as auth_views
+from .views import drone_list, drones_nearby
+
 
 
 urlpatterns = [
@@ -26,11 +28,12 @@ urlpatterns = [
     path('', views.hello_world),
     path('health/', views.health_check),
     path('project/', views.name),
-    path('nigga/', views.nig),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('signup/', views.signup, name='signup'),
-    path('data/', views.drone_data_list)
+    path('data/', views.drone_data_list),
+    path('nearby-drones/', drones_nearby, name='nearby_drones'),
+    path('drone-list/', drone_list, name='drone_list'),
 ]
 
 

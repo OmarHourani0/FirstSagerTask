@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drone Location Info</title>
+</head>
+<body>
+    <h1>Drones Info</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Drone ID</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drone in drone_list %}
+            <tr>
+                <td>{{ drone.drone_id }}</td>
+                <td>{{ drone.latitude }}</td>
+                <td>{{ drone.longitude }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No nearby drones found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

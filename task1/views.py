@@ -2,6 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
 from droneData.models import DroneData
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+
 
 
 project_name = settings.PROJECT_NAME
@@ -20,7 +25,17 @@ def nig(request):
 def name(request):
     return HttpResponse(f"Project is called {project_name}!")
 
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # redirect to login after successful signup
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
+
+@login_required
 def drone_data_list(request):
-    # Get latest 100 entries ordered by newest first
-    data = DroneData.objects.all().order_by('-drone_id')
+    data = DroneData.objects.order_by('-drone_id')
     return render(request, 'data_list.html', {'drone_data_list': data})

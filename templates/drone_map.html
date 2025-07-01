@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drone Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  
+  <style>
+    #map {
+      height: 600px;
+      width: 100%;
+    }
+    #controls {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Drone Tracker</h1>
+  
+  <div id="controls">
+    <label for="droneSelect">Select Drone:</label>
+    <select id="droneSelect">
+        <option value="">-- Choose a Drone --</option>
+        <option value="drone001">drone001</option>
+        <option value="drone002">drone002</option>
+        <option value="drone003">drone003</option>
+        <option value="drone004">drone004</option>
+        <option value="drone005">drone005</option>
+        <option value="drone006">drone006</option>
+        <option value="drone007">drone007</option>
+        <option value="drone008">drone008</option>
+        <option value="drone009">drone009</option>
+        <option value="drone010">drone010</option>
+        <option value="drone011">drone011</option>
+        <option value="drone012">drone012</option>
+        <option value="drone013">drone013</option>
+        <option value="drone014">drone014</option>
+        <option value="drone015">drone015</option>
+        <option value="drone016">drone016</option>
+        <option value="drone017">drone017</option>
+        <option value="drone018">drone018</option>
+        <option value="drone019">drone019</option>
+        <option value="drone020">drone020</option>
+        <option value="drone021">drone021</option>
+        <option value="drone022">drone022</option>
+        <option value="drone023">drone023</option>
+        <option value="drone024">drone024</option>
+        <option value="drone025">drone025</option>
+        <option value="drone026">drone026</option>
+        <option value="drone027">drone027</option>
+        <option value="drone028">drone028</option>
+        <option value="drone029">drone029</option>
+        <option value="drone030">drone030</option>
+        <option value="drone031">drone031</option>
+        <option value="drone032">drone032</option>
+        <option value="drone033">drone033</option>
+        <option value="drone034">drone034</option>
+        <option value="drone035">drone035</option>
+        <option value="drone036">drone036</option>
+        <option value="drone037">drone037</option>
+        <option value="drone038">drone038</option>
+        <option value="drone039">drone039</option>
+        <option value="drone040">drone040</option>
+        <option value="drone041">drone041</option>
+        <option value="drone042">drone042</option>
+        <option value="drone043">drone043</option>
+        <option value="drone044">drone044</option>
+        <option value="drone045">drone045</option>
+        <option value="drone046">drone046</option>
+        <option value="drone047">drone047</option>
+        <option value="drone048">drone048</option>
+        <option value="drone049">drone049</option>
+        <option value="drone050">drone050</option>
+        <option value="drone051">drone051</option>
+        <option value="drone052">drone052</option>
+        <option value="drone053">drone053</option>
+        <option value="drone054">drone054</option>
+        <option value="drone055">drone055</option>
+        <option value="drone056">drone056</option>
+        <option value="drone057">drone057</option>
+        <option value="drone058">drone058</option>
+        <option value="drone059">drone059</option>
+        <option value="drone060">drone060</option>
+        <option value="drone061">drone061</option>
+        <option value="drone062">drone062</option>
+        <option value="drone063">drone063</option>
+        <option value="drone064">drone064</option>
+        <option value="drone065">drone065</option>
+        <option value="drone066">drone066</option>
+        <option value="drone067">drone067</option>
+        <option value="drone068">drone068</option>
+        <option value="drone069">drone069</option>
+        <option value="drone070">drone070</option>
+        <option value="drone071">drone071</option>
+        <option value="drone072">drone072</option>
+        <option value="drone073">drone073</option>
+        <option value="drone074">drone074</option>
+        <option value="drone075">drone075</option>
+        <option value="drone076">drone076</option>
+        <option value="drone077">drone077</option>
+        <option value="drone078">drone078</option>
+        <option value="drone079">drone079</option>
+        <option value="drone080">drone080</option>
+        <option value="drone081">drone081</option>
+        <option value="drone082">drone082</option>
+        <option value="drone083">drone083</option>
+        <option value="drone084">drone084</option>
+        <option value="drone085">drone085</option>
+        <option value="drone086">drone086</option>
+        <option value="drone087">drone087</option>
+        <option value="drone088">drone088</option>
+        <option value="drone089">drone089</option>
+        <option value="drone090">drone090</option>
+        <option value="drone091">drone091</option>
+        <option value="drone092">drone092</option>
+        <option value="drone093">drone093</option>
+        <option value="drone094">drone094</option>
+        <option value="drone095">drone095</option>
+        <option value="drone096">drone096</option>
+        <option value="drone097">drone097</option>
+        <option value="drone098">drone098</option>
+        <option value="drone099">drone099</option>
+        <option value="drone100">drone100</option>
+    </select>
+  </div>
+
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+  var map = L.map('map').setView([31.9632, 35.9304], 9);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Fetch and display all drone flight paths + last points
+  fetch('/api/all-flight-paths/')
+    .then(res => res.json())
+    .then(data => {
+      data.features.forEach(feature => {
+        // Draw flight path
+        const path = L.geoJSON(feature, {
+          style: { color: 'blue', weight: 2 }
+        }).addTo(map);
+
+        // Last coordinate for marker
+        const coords = feature.geometry.coordinates;
+        const last = coords[coords.length - 1];
+
+        const marker = L.circleMarker([last[1], last[0]], {
+          radius: 6,
+          fillColor: "red",
+          color: "#000",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        }).addTo(map);
+
+        marker.bindPopup(`<b>${feature.properties.drone_id}</b><br>Last seen at:<br>${feature.properties.end_time}`);
+      });
+    })
+    .catch(err => {
+      console.error("Error loading flight data", err);
+    });
+</script>
+</body>
+</html>

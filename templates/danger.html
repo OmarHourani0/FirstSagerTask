@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dangerous Drones with Reason</title>
+  </head>
+  <body>
+    <h1>Dangerous Drones Info</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Drone ID</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for drone in danger_list %}
+        <tr>
+          <td>{{ drone.drone_id }}</td>
+          <td>{{ drone.classification }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2">No nearby drones found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

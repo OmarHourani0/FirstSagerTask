@@ -8,6 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from droneData.classifiers import haversine
+from django.http import JsonResponse
+
 
 
 project_name = settings.PROJECT_NAME
@@ -41,6 +43,80 @@ def drones_nearby(request):
         "nearby_drones": sorted(nearby_drones, key=lambda x: x['drone_id'])
     })
 
+
+def danger(request):
+    data = DroneData.objects.exclude(classification="All Good").order_by('-drone_id').values(
+        'drone_id', 'classification',
+    )
+    print("DANGEROUS DRONES:")
+    for d in data:
+        print(d)
+    return render(request, 'danger.html', {
+        'danger_list': data,
+    })
+    
+def drone_flight_path(request, drone_id):
+    # Get all positions for the drone ordered by time
+    points = DroneData.objects.filter(drone_id=drone_id).order_by('timestamp').values('longitude', 'latitude', 'timestamp')
+
+    # If no data found, return a 404
+    if not points.exists():
+        return JsonResponse({"error": "No data found for drone."}, status=404)
+
+    # Construct GeoJSON LineString Feature
+    geojson = {
+        "type": "Feature",
+        "properties": {
+            "drone_id": drone_id,
+            "start_time": points.first()['timestamp'],
+            "end_time": points.last()['timestamp'],
+            "point_count": points.count()
+        },
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+                [point['longitude'], point['latitude']] for point in points
+            ]
+        }
+    }
+    return JsonResponse(geojson)
+
+# views.py
+from django.http import JsonResponse
+from droneData.models import DroneData
+
+def all_drone_paths(request):
+    drone_ids = DroneData.objects.values_list('drone_id', flat=True).distinct()
+    features = []
+
+    for drone_id in drone_ids:
+        points = DroneData.objects.filter(drone_id=drone_id).order_by('timestamp').values('longitude', 'latitude', 'timestamp')
+        if not points.exists():
+            continue
+
+        coords = [[p['longitude'], p['latitude']] for p in points]
+
+        features.append({
+            "type": "Feature",
+            "properties": {
+                "drone_id": drone_id,
+                "start_time": points.first()['timestamp'],
+                "end_time": points.last()['timestamp'],
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": coords
+            }
+        })
+
+    return JsonResponse({
+        "type": "FeatureCollection",
+        "features": features
+    })
+
+
+def drone_map(request):
+    return render(request, 'drone_map.html')
 
 def drone_list(request):
     data = DroneData.objects.order_by('-drone_id').values(

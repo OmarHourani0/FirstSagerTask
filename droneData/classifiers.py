@@ -26,9 +26,7 @@ def classify(drone_data):
     lon1 = 39.000
     lat2 = drone_data['latitude']
     lon2 = drone_data['longitude']
-    
-    distance = haversine(lat1, lon1, lat2, lon2)    
-    
+        
     if drone_data['elevation'] > 500:
         return "DANGER - HIGH ELEVATION"
     elif drone_data['gear'] == 0 and drone_data['elevation'] < 5:

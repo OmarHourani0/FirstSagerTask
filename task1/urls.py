@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from task1 import views
 from django.contrib.auth import views as auth_views
-from .views import drone_list, drones_nearby
+from .views import danger, drone_flight_path, drone_list, drones_nearby
 
 
 
@@ -34,6 +34,10 @@ urlpatterns = [
     path('data/', views.drone_data_list),
     path('nearby-drones/', drones_nearby, name='nearby_drones'),
     path('drone-list/', drone_list, name='drone_list'),
+    path('danger-list/', danger, name='danger_list'),
+    path('api/flight-path/<str:drone_id>/', views.drone_flight_path, name='drone_flight_path'),
+    path('api/all-flight-paths/', views.all_drone_paths),
+    path('drone-map/', views.drone_map, name='drone_map'),
 ]
 
 

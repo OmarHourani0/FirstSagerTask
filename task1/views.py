@@ -136,8 +136,11 @@ def dynamic_drone_api(request, drone_id_and_fields):
                 selected_fields.append(field_map[field.upper()])
 
         # Fetch the latest entry for that drone
-        drone = DroneData.objects.filter(drone_id=drone_id).order_by(
-            '-drone_id').values(*selected_fields).first()
+        if len(selected_fields) == 1:
+            drone = DroneData.objects.filter(drone_id=drone_id).order_by('-drone_id').values().first()
+        else:
+            drone = DroneData.objects.filter(drone_id=drone_id).order_by(
+                '-drone_id').values(*selected_fields).first()
 
         if not drone:
             return JsonResponse({'error': 'Drone not found'}, status=404)

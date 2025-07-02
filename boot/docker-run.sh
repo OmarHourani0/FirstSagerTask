@@ -19,4 +19,4 @@ export RUNTIME_HOST=0.0.0.0
 python send_fake_data.py
 
 # Run development server
-python manage.py runserver $RUNTIME_HOST:$RUNTIME_PORT
+gunicorn task1.wsgi:application --bind $RUNTIME_HOST:$RUNTIME_PORT

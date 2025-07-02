@@ -18,9 +18,9 @@ TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True')
 
-DEBUG = True  # Set to True for development; change to False in production
+# DEBUG = True  # Set to True for development; change to False in production
 
 # Drone IDs from environment file
 raw = os.environ.get('DRONE_IDS', '')
@@ -69,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CSRF_COOKIE_SECURE = True 
 
 ROOT_URLCONF = 'task1.urls'
 

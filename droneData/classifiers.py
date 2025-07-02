@@ -1,5 +1,6 @@
 import math
 
+
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371  # Earth radius in km
 
@@ -17,16 +18,17 @@ def haversine(lat1, lon1, lat2, lon2):
     distance = R * c
     return distance
 
+
 def classify(drone_data):
     """
     Example: Basic classification rule
     """
-    
+
     lat1 = 31.000
-    lon1 = 39.000
+    lon1 = 37.000
     lat2 = drone_data['latitude']
     lon2 = drone_data['longitude']
-        
+
     if drone_data['elevation'] > 500:
         return "DANGER - HIGH ELEVATION"
     elif drone_data['gear'] == 0 and drone_data['elevation'] < 5:
@@ -39,5 +41,3 @@ def classify(drone_data):
         return "WARNING - NEAR HEIGHT LIMIT"
     else:
         return "All Good"
-    
-    

@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'droneData.apps.DronedataConfig',
     'django.contrib.sites',
+    'channels',
 ]
 
 SITE_ID = 1
@@ -90,7 +91,15 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
+
 WSGI_APPLICATION = 'task1.wsgi.application'
+ASGI_APPLICATION = "task1.asgi.application"
 
 
 # Database

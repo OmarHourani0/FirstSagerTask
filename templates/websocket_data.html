@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Live Drone Data</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Recent Drone Data</h1>
+    <table id="drone-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Drone ID</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Elevation</th>
+          <th>Height</th>
+          <th>Home Distance</th>
+          <th>Horizontal Speed</th>
+          <th>Vertical Speed</th>
+          <th>Gear</th>
+          <th>Near Area Limit</th>
+          <th>Near Height Limit</th>
+          <th>RC Lost Action</th>
+          <th>RID State</th>
+          <th>RTH Altitude</th>
+          <th>Storage Total</th>
+          <th>Storage Used</th>
+          <th>Total Flight Distance</th>
+          <th>Total Flight Sorties</th>
+          <th>Total Flight Time</th>
+          <th>Track ID</th>
+          <th>Classification</th>
+        </tr>
+      </thead>
+      <tbody id="drone-data-body">
+        <tr>
+          <td colspan="22">Waiting for data...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      const initialDroneData = JSON.parse(document.getElementById('initial-data-json').textContent);
+      const tbody = document.getElementById("drone-data-body");
+      tbody.innerHTML = "";
+
+      const droneDataMap = {};
+
+      function updateTable() {
+        const sortedIds = Object.keys(droneDataMap).sort();
+        tbody.innerHTML = "";
+        for (const id of sortedIds) {
+          const drone = droneDataMap[id];
+          const tr = document.createElement("tr");
+
+          function addCell(val) {
+            const td = document.createElement("td");
+            td.textContent = val ?? "-";
+            tr.appendChild(td);
+          }
+
+          addCell(drone.timestamp);
+          addCell(drone.drone_id);
+          addCell(drone.latitude);
+          addCell(drone.longitude);
+          addCell(drone.elevation);
+          addCell(drone.height);
+          addCell(drone.home_distance);
+          addCell(drone.horizontal_speed);
+          addCell(drone.vertical_speed);
+          addCell(drone.gear);
+          addCell(drone.is_near_area_limit);
+          addCell(drone.is_near_height_limit);
+          addCell(drone.rc_lost_action);
+          addCell(drone.rid_state);
+          addCell(drone.rth_altitude);
+          addCell(drone.storage_total);
+          addCell(drone.storage_used);
+          addCell(drone.total_flight_distance);
+          addCell(drone.total_flight_sorties);
+          addCell(drone.total_flight_time);
+          addCell(drone.track_id);
+          addCell(drone.classification);
+
+          tbody.appendChild(tr);
+        }
+      }
+
+      // Load initial data
+      initialDroneData.forEach((drone) => {
+        droneDataMap[drone.drone_id] = drone;
+      });
+      updateTable();
+
+      // WebSocket
+      const ws = new WebSocket(
+        `ws://${window.location.host}/ws/telemetry/all/`
+      );
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        droneDataMap[data.drone_id] = data;
+        updateTable();
+
+        ws.send(
+          JSON.stringify({
+            type: "ack",
+            drone_id: data.drone_id,
+            message: "Data received",
+          })
+        );
+      };
+    </script>
+  </body>
+</html>

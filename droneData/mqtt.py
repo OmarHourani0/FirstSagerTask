@@ -15,8 +15,8 @@ def on_connect(client, userdata, flags, rc):
     for drone_id in DRONE_IDS:
         topic = f"thing/product/{drone_id}/osd"
         client.subscribe(topic)
-        print(f"Subscribed to {topic}")
-
+        # print(f"Subscribed to {topic}")
+    print('Subscribed to topics succesfully.')
 
 def on_message(client, userdata, msg):
     print(f"[DEBUG] Raw message received on {msg.topic}: {msg.payload}")
@@ -65,11 +65,35 @@ def on_message(client, userdata, msg):
                 'classification': label,
             }
         )
+        
+        on_new_drone_data(drone_id, data)
+        
         print(f"Message received on {msg.topic}: {msg.payload.decode()}")
         print(f"Saved data for {drone_id} at {timezone.now()}")
 
     except Exception as e:
         print(f"Error processing MQTT message on {msg.topic}: {e}")
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+def on_new_drone_data(drone_id, data_dict):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"drone_{drone_id}",
+        {
+            "type": "drone_data",
+            "data": data_dict  # dictionary to be sent
+        }
+    )
+    
+    async_to_sync(channel_layer.group_send)(
+        "drone_all",
+        {
+            "type": "drone_data",
+            "data": {"drone_id": drone_id, **data_dict}
+        }
+    )
 
         
 def on_disconnect(client, userdata, rc):

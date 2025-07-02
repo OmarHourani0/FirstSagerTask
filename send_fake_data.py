@@ -11,7 +11,7 @@ def fake_payload():
     length = 8
     track_id = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
     lat = 31.000 + random.uniform(-0.06, 0.06)
-    lon = 39.000 + random.uniform(-0.06, 0.06)
+    lon = 37.000 + random.uniform(-0.06, 0.06)
     height_limit = 500
     elevation = random.uniform(0, 550)
     if elevation > height_limit:
@@ -65,4 +65,4 @@ for id in DRONE_IDS:
     payload = json.dumps(fake_payload())
     publish.single(topic, payload, hostname="localhost", port=1883)
     print(f"Sent to {topic}: {payload}")
-    time.sleep(0.02)
+    time.sleep(0.05)

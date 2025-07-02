@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HELLO FROM ASGI</title>
+</head>
+<body>
+    <h1>HELLO FROM ASGIIII!!!!</h1>
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/test/');
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log(data.message);
+        };
+    </script>
+</body>
+</html>

@@ -9,11 +9,33 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from droneData.classifiers import haversine
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
+
 
 
 project_name = settings.PROJECT_NAME
 
+def asgi_test(request):
+    return render(request, 'asgi_test.html')
 
+def websocket_data_view(request):
+    all_data = DroneData.objects.order_by('drone_id')
+
+    latest_per_drone = {}
+    for entry in all_data:
+        if entry.drone_id not in latest_per_drone:
+            latest_per_drone[entry.drone_id] = entry
+
+    latest_data = list(latest_per_drone.values())
+
+    # Convert model instances to dicts for JSON serialization in template
+    data_for_template = [model_to_dict(obj) for obj in latest_data]
+
+    return render(request, "websocket_data.html", {
+        "initial_data": data_for_template
+    })
+    
+    
 @login_required
 def drones_nearby(request):
     nearby_drones = []

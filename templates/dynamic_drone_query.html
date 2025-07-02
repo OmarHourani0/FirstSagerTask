@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dynamic Drone Data</title>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+      }
+      input,
+      button {
+        font-size: 16px;
+        padding: 6px 12px;
+      }
+      table {
+        border-collapse: collapse;
+        margin-top: 20px;
+        width: 80%;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+      th {
+        background-color: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Query Drone Data</h1>
+    <input
+      type="text"
+      id="queryInput"
+      placeholder="e.g. drone005-LONGITUDE-CLASSIFICATION-VERTICAL_SPEED"
+      size="70"
+    />
+    <button onclick="fetchDroneData()">Get Data</button>
+
+    <div id="result"></div>
+
+    <script>
+      function fetchDroneData() {
+        const query = document.getElementById("queryInput").value.trim();
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "Loading...";
+
+        fetch(`/api/${query}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              resultDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+              return;
+            }
+
+            let table = "<table><thead><tr>";
+            for (const key in data) {
+              table += `<th>${key}</th>`;
+            }
+            table += "</tr></thead><tbody><tr>";
+            for (const key in data) {
+              table += `<td>${data[key]}</td>`;
+            }
+            table += "</tr></tbody></table>";
+
+            resultDiv.innerHTML = table;
+          })
+          .catch((err) => {
+            resultDiv.innerHTML = `<p style="color:red;">Failed to fetch data.</p>`;
+            console.error(err);
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -39,6 +39,8 @@ urlpatterns = [
     path('api/flight-path/<str:drone_id>/', views.drone_flight_path, name='drone_flight_path'),
     path('api/all-flight-paths/', views.all_drone_paths),
     path('drone-map/', views.drone_map, name='drone_map'),
+    path('api/<str:drone_id_and_fields>/', views.dynamic_drone_api, name='dynamic_drone_api'),
+    path('drone-query/', views.dynamic_drone_query_page, name='drone_query'),
 ]
 
 

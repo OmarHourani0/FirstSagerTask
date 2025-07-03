@@ -18,9 +18,9 @@ TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True')
+# DEBUG = os.environ.get("DJANGO_DEBUG")
+DEBUG = False  
 
-# DEBUG = True  # Set to True for development; change to False in production
 
 # Drone IDs from environment file
 raw = os.environ.get('DRONE_IDS', '')

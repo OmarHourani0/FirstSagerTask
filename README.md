@@ -127,11 +127,17 @@ To extract specific fields from a drone, navigate to `/drone-query/` and enter a
 
 ## Local Development Setup
 
-To run the system locally, ensure the following dependencies are installed and running:
+To run the system locally, do the following:
 
-### Step-by-Step Commands
-
-
+### Python Setup
+```
+python -m venv django
+source django/bin/activate
+```
+### Install Requirements
+```
+pip install -r requirements.txt
+```
 ### Start MQTT broker
 ```
 mosquitto -v
@@ -140,17 +146,14 @@ mosquitto -v
 ```
 brew services start redis
 ```
-
 ### Start PostgreSQL
 ```
 brew services start postgresql
 ```
-
 ### Apply Django migrations
 ```
 python manage.py migrate
 ```
-
 ### Run the development ASGI server
 ```
 uvicorn task1.asgi:application --host 127.0.0.1 --port 8000

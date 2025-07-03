@@ -21,6 +21,7 @@ def asgi_test(request):
     return render(request, 'websocket_test.html')
 
 
+@login_required
 def websocket_data_view(request):
     # get one latest-per-drone
     latest_per_drone = (
@@ -64,6 +65,7 @@ def drones_nearby(request):
     })
 
 
+
 @login_required
 def danger(request):
     data = DroneData.objects.exclude(classification="All Good").order_by('-drone_id').values(
@@ -77,6 +79,7 @@ def danger(request):
     })
 
 
+@login_required
 def drone_flight_path(request, drone_id):
     # Get all positions for the drone ordered by time
     points = DroneData.objects.filter(drone_id=drone_id).order_by(
@@ -105,6 +108,7 @@ def drone_flight_path(request, drone_id):
     return JsonResponse(geojson)
 
 
+@login_required
 def dynamic_drone_api(request, drone_id_and_fields):
     try:
         parts = drone_id_and_fields.split('-')
@@ -172,10 +176,12 @@ def dynamic_drone_api(request, drone_id_and_fields):
         return JsonResponse({'error': str(e)}, status=400)
 
 
+@login_required
 def dynamic_drone_query_page(request):
     return render(request, 'dynamic_drone_query.html')
 
 
+@login_required
 def all_drone_paths(request):
     drone_ids = DroneData.objects.values_list('drone_id', flat=True).distinct()
     features = []

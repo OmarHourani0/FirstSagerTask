@@ -11,6 +11,15 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def is_running_in_docker():
+    try:
+        with open("/proc/1/cgroup", "rt") as f:
+            return any("docker" in line or "containerd" in line for line in f)
+    except FileNotFoundError:
+        return False
+
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -99,11 +108,15 @@ TEMPLATES = [
 
 
 ## REDIS CHANNEL LAYER
+
+REDIS_HOST = "redis" if is_running_in_docker() else "127.0.0.1"
+
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(REDIS_HOST, 6379)],
         },
     },
 }

@@ -1,9 +1,18 @@
 
+### SETUP TO RUN LOCALLY
+1) Set up MQTT Broker:
+    mosquitto -v
 
+2) Start REDIS
+    brew services start redis
+
+3) Start POSTGRESQL Server
+    brew services start postgresql
+
+
+### DJANGO COMMANDS
 {FOR A NORMAL WSGI HTTP SERVER}
 gunicorn task1.wsgi:application --bind 127.0.0.1:8000
 
 {FOR AN ASGI WEBSOCKET SERVER}
 uvicorn task1.asgi:application --host 127.0.0.1 --port 8000
-
-

@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     mosquitto \
     mosquitto-clients \
     gcc \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Create the code directory
@@ -29,11 +30,13 @@ WORKDIR /code
 
 # Copy requirements and install Python packages
 COPY requirements.txt /tmp/requirements.txt
-COPY ./src /code
 RUN pip install -r /tmp/requirements.txt
 
-# Run collectstatic during build 
-RUN python manage.py collectstatic --no-input 
+# Copy the application source
+COPY ./src /code
+
+# Optional: collect static files (if needed)
+RUN python manage.py collectstatic --no-input || true
 
 # Copy entrypoint script
 COPY ./boot/docker-run.sh /opt/docker-run.sh

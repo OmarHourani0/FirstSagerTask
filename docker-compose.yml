@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SECRET_KEY: your-secret
+      DJANGO_DEBUG: "True"
+      DRONE_IDS: drone001,drone002,drone003,drone004,drone005,drone006,drone007,drone008,drone009,drone010,drone011,drone012,drone013,drone014,drone015,drone016,drone017,drone018,drone019,drone020,drone021,drone022,drone023,drone024,drone025,drone026,drone027,drone028,drone029,drone030,drone031,drone032,drone033,drone034,drone035,drone036,drone037,drone038,drone039,drone040,drone041,drone042,drone043,drone044,drone045,drone046,drone047,drone048,drone049,drone050,drone051,drone052,drone053,drone054,drone055,drone056,drone057,drone058,drone059,drone060,drone061,drone062,drone063,drone064,drone065,drone066,drone067,drone068,drone069,drone070,drone071,drone072,drone073,drone074,drone075,drone076,drone077,drone078,drone079,drone080,drone081,drone082,drone083,drone084,drone085,drone086,drone087,drone088,drone089,drone090,drone091,drone092,drone093,drone094,drone095,drone096,drone097,drone098,drone099,drone100
+      MQTT_BROKER_URL: mosquitto
+      MQTT_BROKER_PORT: 1883
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+      - mosquitto
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf

@@ -12,11 +12,12 @@ cd /code
 # Apply migrations
 python manage.py migrate --no-input 
 
+# Optional: Send dummy data (in background)
+python send_fake_data.py &
+
 # Set runtime variables
 export RUNTIME_PORT=8000
 export RUNTIME_HOST=0.0.0.0
 
-python send_fake_data.py
-
-# Run development server
-gunicorn task1.wsgi:application --bind $RUNTIME_HOST:$RUNTIME_PORT
+# Start ASGI server with uvicorn (not gunicorn)
+exec uvicorn task1.asgi:application --host $RUNTIME_HOST --port $RUNTIME_PORT

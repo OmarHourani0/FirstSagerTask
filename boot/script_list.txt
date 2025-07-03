@@ -1,0 +1,9 @@
+
+
+{FOR A NORMAL WSGI HTTP SERVER}
+gunicorn task1.wsgi:application --bind 127.0.0.1:8000
+
+{FOR AN ASGI WEBSOCKET SERVER}
+uvicorn task1.asgi:application --host 127.0.0.1 --port 8000
+
+

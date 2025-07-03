@@ -14,8 +14,7 @@ class MyConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         await self.send(text_data=json.dumps({"echo": text_data}))
         
-        
-        
+            
 # consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer

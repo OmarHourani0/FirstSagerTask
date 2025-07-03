@@ -9,6 +9,28 @@ DRONE_IDS = getattr(settings, 'DRONE_IDS', [])
 MQTT_BROKER_URL = getattr(settings, 'MQTT_BROKER_URL', 'localhost')
 MQTT_BROKER_PORT = getattr(settings, 'MQTT_BROKER_PORT', 1883)
 
+## ASGI STUFF
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+def on_new_drone_data(drone_id, data_dict):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"drone_{drone_id}",
+        {
+            "type": "drone_data",
+            "data": data_dict  # dictionary to be sent
+        }
+    )
+    
+    async_to_sync(channel_layer.group_send)(
+        "drone_all",
+        {
+            "type": "drone_data",
+            "data": {"drone_id": drone_id, **data_dict}
+        }
+    )
+## END OF ASGI STUFF
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT broker with code:", rc)
@@ -19,7 +41,7 @@ def on_connect(client, userdata, flags, rc):
     print('Subscribed to topics succesfully.')
 
 def on_message(client, userdata, msg):
-    print(f"[DEBUG] Raw message received on {msg.topic}: {msg.payload}")
+    # print(f"[DEBUG] Raw message received on {msg.topic}: {msg.payload}")
     from .models import DroneData
     try:
         data = json.loads(msg.payload.decode())
@@ -68,34 +90,13 @@ def on_message(client, userdata, msg):
         
         on_new_drone_data(drone_id, data)
         
-        print(f"Message received on {msg.topic}: {msg.payload.decode()}")
-        print(f"Saved data for {drone_id} at {timezone.now()}")
+        # print(f"Message received on {msg.topic}: {msg.payload.decode()}")
+        # print(f"Saved data for {drone_id} at {timezone.now()}")
 
     except Exception as e:
         print(f"Error processing MQTT message on {msg.topic}: {e}")
 
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-
-def on_new_drone_data(drone_id, data_dict):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        f"drone_{drone_id}",
-        {
-            "type": "drone_data",
-            "data": data_dict  # dictionary to be sent
-        }
-    )
-    
-    async_to_sync(channel_layer.group_send)(
-        "drone_all",
-        {
-            "type": "drone_data",
-            "data": {"drone_id": drone_id, **data_dict}
-        }
-    )
-
-        
+     
 def on_disconnect(client, userdata, rc):
     print("Disconnected with result code "+str(rc))
 

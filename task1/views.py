@@ -10,32 +10,30 @@ from django.http import JsonResponse
 from droneData.classifiers import haversine
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 
 project_name = settings.PROJECT_NAME
 
+
 def asgi_test(request):
-    return render(request, 'asgi_test.html')
+    return render(request, 'websocket_test.html')
+
 
 def websocket_data_view(request):
-    all_data = DroneData.objects.order_by('drone_id')
-
-    latest_per_drone = {}
-    for entry in all_data:
-        if entry.drone_id not in latest_per_drone:
-            latest_per_drone[entry.drone_id] = entry
-
-    latest_data = list(latest_per_drone.values())
-
-    # Convert model instances to dicts for JSON serialization in template
-    data_for_template = [model_to_dict(obj) for obj in latest_data]
-
+    # get one latest-per-drone
+    latest_per_drone = (
+        DroneData.objects
+        .order_by('drone_id', '-timestamp')
+        .distinct('drone_id')
+    )
+    data_for_template = [model_to_dict(d) for d in latest_per_drone]
     return render(request, "websocket_data.html", {
         "initial_data": data_for_template
     })
-    
-    
+
+
 @login_required
 def drones_nearby(request):
     nearby_drones = []
@@ -159,7 +157,8 @@ def dynamic_drone_api(request, drone_id_and_fields):
 
         # Fetch the latest entry for that drone
         if len(selected_fields) == 1:
-            drone = DroneData.objects.filter(drone_id=drone_id).order_by('-drone_id').values().first()
+            drone = DroneData.objects.filter(
+                drone_id=drone_id).order_by('-drone_id').values().first()
         else:
             drone = DroneData.objects.filter(drone_id=drone_id).order_by(
                 '-drone_id').values(*selected_fields).first()
@@ -247,5 +246,5 @@ def signup(request):
 
 @login_required
 def drone_data_list(request):
-    data = DroneData.objects.order_by('-drone_id')
+    data = DroneData.objects.order_by('drone_id')
     return render(request, 'data_list.html', {'drone_data_list': data})

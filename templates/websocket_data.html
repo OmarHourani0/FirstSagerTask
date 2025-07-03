@@ -17,6 +17,7 @@
   </head>
   <body>
     <h1>Recent Drone Data</h1>
+    {{ initial_data|json_script:"initial-data-json" }}
     <table id="drone-table">
       <thead>
         <tr>
@@ -51,74 +52,85 @@
       </tbody>
     </table>
 
+    {% comment %}
+    <script id="initial-data-json" type="application/json">
+      {{ initial_data|safe|json_script:"initial-data-json" }}
+    </script>
+    {% endcomment %}
+
     <script>
-      const initialDroneData = JSON.parse(document.getElementById('initial-data-json').textContent);
-      const tbody = document.getElementById("drone-data-body");
-      tbody.innerHTML = "";
+      // 1) grab the JSON blob from that <script> tag
+      const initialDroneData = JSON.parse(
+        document.getElementById("initial-data-json").textContent
+      );
 
       const droneDataMap = {};
+      const tbody = document.getElementById("drone-data-body");
 
       function updateTable() {
-        const sortedIds = Object.keys(droneDataMap).sort();
         tbody.innerHTML = "";
-        for (const id of sortedIds) {
-          const drone = droneDataMap[id];
-          const tr = document.createElement("tr");
-
-          function addCell(val) {
-            const td = document.createElement("td");
-            td.textContent = val ?? "-";
-            tr.appendChild(td);
-          }
-
-          addCell(drone.timestamp);
-          addCell(drone.drone_id);
-          addCell(drone.latitude);
-          addCell(drone.longitude);
-          addCell(drone.elevation);
-          addCell(drone.height);
-          addCell(drone.home_distance);
-          addCell(drone.horizontal_speed);
-          addCell(drone.vertical_speed);
-          addCell(drone.gear);
-          addCell(drone.is_near_area_limit);
-          addCell(drone.is_near_height_limit);
-          addCell(drone.rc_lost_action);
-          addCell(drone.rid_state);
-          addCell(drone.rth_altitude);
-          addCell(drone.storage_total);
-          addCell(drone.storage_used);
-          addCell(drone.total_flight_distance);
-          addCell(drone.total_flight_sorties);
-          addCell(drone.total_flight_time);
-          addCell(drone.track_id);
-          addCell(drone.classification);
-
-          tbody.appendChild(tr);
-        }
+        Object.keys(droneDataMap)
+          .sort()
+          .forEach((id) => {
+            const d = droneDataMap[id];
+            const tr = document.createElement("tr");
+            [
+              d.timestamp,
+              d.drone_id,
+              d.latitude,
+              d.longitude,
+              d.elevation,
+              d.height,
+              d.home_distance,
+              d.horizontal_speed,
+              d.vertical_speed,
+              d.gear,
+              d.is_near_area_limit,
+              d.is_near_height_limit,
+              d.rc_lost_action,
+              d.rid_state,
+              d.rth_altitude,
+              d.storage_total,
+              d.storage_used,
+              d.total_flight_distance,
+              d.total_flight_sorties,
+              d.total_flight_time,
+              d.track_id,
+              d.classification,
+            ].forEach((val) => {
+              const td = document.createElement("td");
+              td.textContent = val === null || val === undefined ? "–" : val;
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
       }
 
-      // Load initial data
-      initialDroneData.forEach((drone) => {
-        droneDataMap[drone.drone_id] = drone;
+      // initialize
+      initialDroneData.forEach((d) => {
+        droneDataMap[d.drone_id] = d;
       });
       updateTable();
 
-      // WebSocket
+      // 2) open the websocket
       const ws = new WebSocket(
         `ws://${window.location.host}/ws/telemetry/all/`
       );
 
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        droneDataMap[data.drone_id] = data;
+      ws.onopen = () => console.log("WS opened");
+      ws.onerror = (e) => console.error("WS error", e);
+
+      ws.onmessage = ({ data }) => {
+        const d = JSON.parse(data);
+        droneDataMap[d.drone_id] = d;
         updateTable();
 
+        // two‑way ACK
         ws.send(
           JSON.stringify({
             type: "ack",
-            drone_id: data.drone_id,
-            message: "Data received",
+            drone_id: d.drone_id,
+            message: "received",
           })
         );
       };

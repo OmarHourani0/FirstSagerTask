@@ -132,26 +132,26 @@ To run the system locally, ensure the following dependencies are installed and r
 ### Step-by-Step Commands
 
 
-# 1. Start MQTT broker
+### Start MQTT broker
 ```
 mosquitto -v
 ```
-# 2. Start Redis
+### Start Redis
 ```
 brew services start redis
 ```
 
-# 3. Start PostgreSQL
+### Start PostgreSQL
 ```
 brew services start postgresql
 ```
 
-# 4. Apply Django migrations
+### Apply Django migrations
 ```
 python manage.py migrate
 ```
 
-# 5. Run the development ASGI server
+### Run the development ASGI server
 ```
 uvicorn task1.asgi:application --host 127.0.0.1 --port 8000
 ```

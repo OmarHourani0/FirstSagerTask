@@ -33,5 +33,5 @@ echo "Django migrations applied and data sent."
 export RUNTIME_PORT=8000
 export RUNTIME_HOST=0.0.0.0
 
-# Start ASGI server with uvicorn (not gunicorn)
+# Start ASGI server with uvicorn 
 exec uvicorn task1.asgi:application --host $RUNTIME_HOST --port $RUNTIME_PORT

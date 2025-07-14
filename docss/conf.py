@@ -8,7 +8,11 @@
 
 import os
 import sys
+import django
+
 sys.path.insert(0, os.path.abspath('../..'))  # Adjust as needed
+os.environ['DJANGO_SETTINGS_MODULE'] = 'task1.settings'
+django.setup()
 
 
 project = 'DjangoFirstTask'
@@ -23,7 +27,12 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.viewcode',
 ]
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False  # Or True if you prefer NumPy style
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

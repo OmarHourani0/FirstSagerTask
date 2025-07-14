@@ -2,6 +2,12 @@ import json
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 
 class MyConsumer(AsyncWebsocketConsumer):
+    """
+    The Consumer was made for testing purposes, it just returns a simple message.
+
+    Longer description (if necessary) that explains the function in more detail,
+    including any context or background.
+    """
     async def connect(self):
         await self.accept()
         await self.send(text_data=json.dumps({
@@ -14,12 +20,20 @@ class MyConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         await self.send(text_data=json.dumps({"echo": text_data}))
         
-            
-# consumers.py
-import json
-from channels.generic.websocket import AsyncWebsocketConsumer
-
 class DroneTelemetryConsumer(AsyncWebsocketConsumer):
+    """
+    This consumer handles realitime drone data via websockets. 
+    
+    It receives the data and then relays it to the websocket clients. The different functions handle the connection
+    and everything related to the session. It handles data for all the drones at once or for a specific 
+    drone, it based on the URL parameters. When data is received, it sends an acknowledgment back.
+    
+    Returns:
+        ReturnType: The class sends data to the WebSocket clients in JSON format.
+
+    Raises:
+        ExceptionType: Could raise errors if the connection fails or if the data format is incorrect.
+    """
     async def connect(self):
         self.drone_id = self.scope['url_route']['kwargs'].get('drone_id', 'all')
         if self.drone_id == 'all':

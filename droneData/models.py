@@ -1,6 +1,21 @@
 from django.db import models
 
 class DroneData(models.Model):
+    
+    """
+    The class defines the types of data that will be stored in the database for each drone.
+
+    Args:
+        No parameters are required to initialize this class.
+
+    Returns:
+        ReturnType: The class does not return anything, but it defines the structure of the drone data model.
+
+    Raises:
+        Cant raise any excpection but the model has to be well defined.
+        And the database has to be properly configured to store this data.
+    """
+    
     drone_id = models.CharField(max_length=100, unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 

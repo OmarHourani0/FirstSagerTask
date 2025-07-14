@@ -32,7 +32,8 @@ class AuthHandler(SimpleHTTPRequestHandler):
             return
 
 if __name__ == '__main__':
-    webdir = '/Users/Omar/dev/SagerFirstTask/docs/_build/html'
+    webdir = '/Users/Omar/dev/SagerFirstTask/docss/_build/html'
+    # webdir = '/Users/Omar/dev/SagerFirstTask/docs/build/html'
     if not os.path.isdir(webdir):
         print(f"Error: directory does not exist: {webdir}")
         sys.exit(1)

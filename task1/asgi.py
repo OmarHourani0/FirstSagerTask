@@ -1,17 +1,22 @@
+# """
+# ASGI config for task1 project.
+
+# It exposes the ASGI callable as a module-level variable named ``application``.
+
+# For more information on this file, see
+# https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
+# """
+
 """
-ASGI config for task1 project.
+    ASGI config for task1 project.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
+    It exposes the ASGI callable as a module-level variable named ``application``. Which can either be used to 
+    run the application normally using HTTP or to serve it using an ASGI server for WebSockets.
 """
 
 import os
 import django
-
 from django.core.asgi import get_asgi_application
-from channels.routing import get_default_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 
@@ -28,7 +33,3 @@ application = ProtocolTypeRouter({
         )
     ),
 })
-
-# application = get_asgi_application()
-
-# application = get_default_application()

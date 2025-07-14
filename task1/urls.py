@@ -18,6 +18,19 @@ from task1.views import (
     health_check, drone_flight_path, all_drone_paths, dynamic_drone_api
 )
 
+"""
+    This module dfines the URL routing for the project. It is split into multiple sections.
+
+    The URLs are organized into catergories which are: Admin, Auth, HTML Pages, 
+    swagger specific documentation pages, and WebSocket APIs
+
+    Args:
+        No parameters are required for this module. The user just enters the correct URL and endpoint in the browser.
+
+    Returns:
+        ReturnType: It will return a rendred HTML page for most endpoints, or a JSON response for some API endpoints.
+    """
+
 schema_view = get_schema_view(
     openapi.Info(
         title="My Django API",

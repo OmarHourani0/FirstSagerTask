@@ -1,0 +1,8 @@
+FIRST DOCUMENTATION STYLE: (sphinx + reST style)
+
+    
+
+    pip install sphinx 
+    sphinx-quickstart docs/  
+
+    pip install sphinx-autodoc-typehints sphinxcontrib-napoleon

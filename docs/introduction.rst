@@ -1,0 +1,18 @@
+Introduction
+============
+
+My first Django project which was inteded to make me learn Django.
+
+I made this project which recieves data from simulated drones using MQTT, then the project processes the data and displayes it on simple html pages using APIs.
+In addidition to having regular REST APIs to access the data, I have imoplemented a WebSocket API to allow real-time updates of the data on the web pages.
+The project also has an admin page and some pages require you to be logged in to access them.
+
+**The features of this project are:**
+
+- Real-time telemetry updates via Django Channels and WebSockets
+- MQTT integration for high-throughput telemetry ingestion
+- PostgreSQL-backed data persistence
+- Redis-backed channel layer for scalable asynchronous communication
+- Interactive drone tracking map and telemetry dashboards
+- Custom query interface for advanced telemetry inspection
+- Modular and dockerized deployment workflow

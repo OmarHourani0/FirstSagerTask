@@ -1,23 +1,16 @@
 #!/bin/bash
+set -e
 
-# Start Mosquitto broker in the background
+echo "Starting Mosquitto..."
 mosquitto -c /etc/mosquitto/mosquitto.conf -d
 
-# Activate virtual environment
-source /opt/venv/bin/activate
-
-# Change to code directory
 cd /code
 
-# Apply migrations
-python manage.py migrate --no-input 
+echo "Applying Django migrations..."
+python manage.py migrate --no-input
 
-# Optional: Send dummy data (in background)
+echo "Sending fake data..."
 python send_fake_data.py &
 
-# Set runtime variables
-export RUNTIME_PORT=8000
-export RUNTIME_HOST=0.0.0.0
-
-# Start ASGI server with uvicorn (not gunicorn)
-exec uvicorn task1.asgi:application --host $RUNTIME_HOST --port $RUNTIME_PORT
+echo "Starting ASGI server..."
+exec uvicorn task1.asgi:application --host 0.0.0.0 --port 8000

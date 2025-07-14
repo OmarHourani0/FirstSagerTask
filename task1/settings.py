@@ -65,7 +65,22 @@ INSTALLED_APPS = [
     'droneData.apps.DronedataConfig',
     'django.contrib.sites',
     'channels',
+    'rest_framework',    
+    'drf_spectacular',
 ]
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'My First Sager Task',
+    'DESCRIPTION': 'I made this project which recieves data from simulated drones using MQTT, then the project processes the data and displayes it on simple html pages using APIs. In addidition to having regular REST APIs to access the data, I have imoplemented a WebSocket API to allow real-time updates of the data on the web pages. The project also has an admin page and some pages require you to be logged in to access them.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
 
 SITE_ID = 1
 

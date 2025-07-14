@@ -1,48 +1,70 @@
-"""
-URL configuration for task1 project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import include, path
-from task1 import views
+from django.urls import include, path, re_path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from django.contrib.auth import views as auth_views
-from .views import danger, drone_flight_path, drone_list, drones_nearby
+from django.conf import settings
+from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from task1.views import (
+    # HTML views
+    name, signup, drone_data_list, drone_list, danger,
+    drone_flight_path_page, all_drone_paths_page, drone_map,
+    dynamic_drone_query_page, asgi_test, websocket_data_view, drones_nearby,
+    hello_world,
 
+    # API views
+    health_check, drone_flight_path, all_drone_paths, dynamic_drone_api
+)
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="My Django API",
+        default_version='v1',
+        description="API documentation for my Django project",
+        terms_of_service="https://www.example.com/terms/",
+        contact=openapi.Contact(email="contact@example.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
+    # Admin 
     path('admin/', admin.site.urls),
-    # path('/', views.hello_world),
-    # path('', views.hello_world),
-    path('health/', views.health_check),
-    path('project/', views.name),
-    path('', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    
+    # Auth
+    path('', auth_views.LoginView.as_view(
+        template_name='login.html'), name='login'),
     path('/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('signup/', views.signup, name='signup'),
-    path('data/', views.drone_data_list),
+    path('signup/', signup, name='signup'),
+    
+    # HTML PAGES
+    path('health/', health_check),
+    path('project/', name),
+    path('data/', drone_data_list),
     path('nearby-drones/', drones_nearby, name='nearby_drones'),
     path('drone-list/', drone_list, name='drone_list'),
     path('danger-list/', danger, name='danger_list'),
-    path('api/flight-path/<str:drone_id>/', views.drone_flight_path, name='drone_flight_path'),
-    path('api/all-flight-paths/', views.all_drone_paths),
-    path('drone-map/', views.drone_map, name='drone_map'),
-    path('api/<str:drone_id_and_fields>/', views.dynamic_drone_api, name='dynamic_drone_api'),
-    path('drone-query/', views.dynamic_drone_query_page, name='drone_query'),
-    path('asgi/',views.asgi_test, name='asgi_test'),
-    path('websocket-data/', views.websocket_data_view, name='websocket_data'),
-]
-
+    path('drone-map/', drone_map, name='drone_map'),
+    path('drone-query/', dynamic_drone_query_page, name='drone_query'),
+    path('api/all-flight-paths/', all_drone_paths),
+    
+    
+    # SWAGGER RELATED STUFF
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    
+    # WEBSOCKET APIs DO NOT TOUCH
+    path('api/drone/<str:drone_id_and_fields>/',
+         dynamic_drone_api, name='dynamic_drone_api'),
+    path('api/flight-path/<str:drone_id>/',
+         drone_flight_path, name='drone_flight_path'),
+    path('asgi/', asgi_test, name='asgi_test'),
+    path('websocket-data/', websocket_data_view, name='websocket_data'),
+] 
 

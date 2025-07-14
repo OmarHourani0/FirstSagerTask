@@ -9,6 +9,9 @@
 3) Start POSTGRESQL Server
     brew services start postgresql
 
+### SEND DATA
+python send_fake_data.py
+
 
 ### DJANGO COMMANDS
 {FOR A NORMAL WSGI HTTP SERVER}

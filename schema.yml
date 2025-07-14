@@ -1,0 +1,12 @@
+openapi: 3.0.3
+info:
+  title: My First Sager Task
+  version: 1.0.0
+  description: I made this project which recieves data from simulated drones using
+    MQTT, then the project processes the data and displayes it on simple html pages
+    using APIs. In addidition to having regular REST APIs to access the data, I have
+    imoplemented a WebSocket API to allow real-time updates of the data on the web
+    pages. The project also has an admin page and some pages require you to be logged
+    in to access them.
+paths: {}
+components: {}

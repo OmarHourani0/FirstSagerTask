@@ -9,8 +9,8 @@ from droneData.classifiers import haversine
 def fake_payload():
     length = 8
     track_id = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-    lat = 31.000 + random.uniform(-0.06, 0.06)
-    lon = 37.000 + random.uniform(-0.06, 0.06)
+    lat = 31.9544 + random.uniform(-0.06, 0.06)
+    lon = 35.9106 + random.uniform(-0.06, 0.06)
     height_limit = 500
     elevation = random.uniform(0, 550)
     if elevation > height_limit:
@@ -23,7 +23,7 @@ def fake_payload():
         "gear": random.choice([0, 1, 2, 3]),
         "height": random.uniform(0, 10),
         "height_limit": height_limit,
-        "home_distance": haversine(31.000, 39.000, lat, lon),
+        "home_distance": haversine(31.9544, 35.9106, lat, lon),
         "horizontal_speed": random.uniform(0, 15),
         "is_near_area_limit": random.choice([0, 1]),
         "is_near_height_limit": near_height_limit,
